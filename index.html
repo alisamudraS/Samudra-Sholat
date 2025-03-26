@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Samudra Sholat</title>
+  <link rel="stylesheet" href="style.css" />
+  <script defer src="script.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- VIDEO BACKGROUND -->
+  <video autoplay muted loop id="bg-video">
+    <source src="video/background.mp4" type="video/mp4" />
+  </video>
+
+  <!-- AUDIO BACKGROUND -->
+  <audio id="bg-audio" loop>
+    <source src="audio/bg-audio.mp3" type="audio/mpeg" />
+    Browser tidak mendukung audio.
+  </audio>
+
+  <!-- HEADER -->
+  <header>
+    <h1>🕌 Samudra Sholat</h1>
+    <p>Website penampil jadwal sholat & imsakiyah berdasarkan lokasi dan tanggal</p>
+    <p>Dibuat oleh Ali Samudra untuk tugas praktikum PWEB</p>
+  </header>
+
+  <!-- PILIH TANGGAL -->
+  <section id="pilihan">
+    <label for="tanggal">Pilih Tanggal:</label>
+    <input type="date" id="tanggal" />
+    <button id="cariBtn">Cari Jadwal</button>
+    <button id="toggleAudio" title="Mute / Unmute">🔊</button>
+  </section>
+
+  <!-- OUTPUT -->
+  <section id="output"></section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2025 Samudra Sholat by Ali Samudra</p>
+  </footer>
+</body>
+</html>

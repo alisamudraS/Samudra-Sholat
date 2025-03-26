@@ -1,0 +1,100 @@
+/* VIDEO BACKGROUND RESPONSIF */
+#bg-video {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    z-index: -1;
+    filter: brightness(0.5);
+    pointer-events: none;
+  }
+  
+  /* Responsif untuk HP Portrait */
+  @media screen and (max-aspect-ratio: 3/4) {
+    #bg-video {
+      object-fit: contain;
+    }
+  }
+  
+  body {
+    font-family: 'Cairo', sans-serif;
+    color: #f8f8f8;
+    text-align: center;
+    padding: 20px;
+    margin: 0;
+    scroll-behavior: smooth;
+    background-color: #000;
+  }
+  
+  header {
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 30px;
+  }
+  
+  #pilihan {
+    background-color: rgba(255, 255, 255, 0.05);
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+  }
+  
+  input[type="date"],
+  button {
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 6px;
+  }
+  
+  button {
+    background-color: #00c896;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin: 5px;
+  }
+  
+  button:hover {
+    background-color: #009e74;
+  }
+  
+  #toggleAudio {
+    background-color: rgba(255, 255, 255, 0.1);
+    font-size: 20px;
+    padding: 8px 12px;
+    border-radius: 50%;
+    color: white;
+  }
+  
+  #output {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    animation: fadeIn 0.5s ease-in-out;
+  }
+  
+  #output p {
+    background-color: rgba(255, 255, 255, 0.15);
+    padding: 8px;
+    margin: 5px auto;
+    max-width: 300px;
+    border-radius: 6px;
+    color: #ffffff;
+    font-weight: bold;
+  }
+  
+  footer {
+    margin-top: 40px;
+    opacity: 0.7;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
