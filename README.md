@@ -1,24 +1,57 @@
 # Samudra-Sholat 🕌
 
-Website untuk menampilkan jadwal sholat & imsakiyah berdasarkan **lokasi pengguna** dan **tanggal yang dipilih**, dengan tampilan yang responsif dan dinamis.
+Website interaktif untuk menampilkan jadwal sholat dan imsakiyah berdasarkan **lokasi pengguna** dan **tanggal yang dipilih**.  
+Dibuat untuk tugas praktikum PWEB oleh Ali Samudra.
 
-### ✨ Fitur Utama:
+---
+
+## ✨ Fitur Utama
+
+- Menampilkan jadwal sholat (Subuh, Dzuhur, Ashar, Maghrib, Isya)
+- Menampilkan waktu **Imsak** saat bulan Ramadan
+- Input tanggal manual (date picker)
 - Deteksi lokasi otomatis (geolocation)
-- Menampilkan waktu sholat: Subuh, Dzuhur, Ashar, Maghrib, Isya
-- Menampilkan waktu Imsak khusus saat bulan Ramadan
-- Input tanggal manual (dengan date picker)
-- Background video looping
-- Audio latar otomatis (dengan tombol mute/unmute)
-- Responsive dan estetik di semua perangkat
+- **Audio latar otomatis** (bisa mute/unmute)
+- **Background video** estetik (khusus desktop)
+- Desain responsif
 
-### 📦 Teknologi yang Digunakan:
+---
+
+## 📱 Catatan Versi Mobile
+
+Setelah dilakukan pengujian di beberapa perangkat mobile, ditemukan bahwa:
+
+- Background video menyebabkan **lag / frame drop parah**
+- Beberapa HP tidak mampu menjalankan video + audio bersamaan
+- Bahkan ada yang gagal load karena jaringan lambat
+
+📌 Maka, **background video di-nonaktifkan khusus versi mobile** demi:
+- Performa yang lebih ringan
+- Fokus pada fitur utama: **jadwal sholat & imsakiyah**
+- Memastikan **semua device bisa tetap mengakses fungsionalitas utama**
+
+---
+
+## 📦 Teknologi
+
 - HTML, CSS, JavaScript
-- API: [Aladhan Prayer Times API](https://aladhan.com/prayer-times-api)
-- Hosting: [Vercel](https://vercel.com/)
+- API: [Aladhan Prayer Times](https://aladhan.com/prayer-times-api)
+- Hosting: [Vercel](https://vercel.com)
 
-### 👤 Dibuat oleh:
+---
+
+## ⚠️ Catatan Tambahan
+
+- Jika browser tidak memberikan izin lokasi, maka sistem akan fallback ke lokasi default: **Jakarta**
+- Di HP, suara hanya akan muncul setelah pengguna melakukan interaksi (aturan browser)
+
+---
+
+## 👨‍💻 Dibuat oleh:
 Ali Samudra  
-Untuk tugas praktikum PWEB
+Tugas Praktikum PWEB 2025
 
-### 🔗 Live Demo:
+---
+
+## 🔗 Live Demo:
 https://samudra-sholat.vercel.app/
