@@ -21,3 +21,4 @@ Ali Samudra
 Untuk tugas praktikum PWEB
 
 ### 🔗 Live Demo:
+https://samudra-sholat.vercel.app/
