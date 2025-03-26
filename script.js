@@ -1,49 +1,55 @@
 const cariBtn = document.getElementById('cariBtn');
 const output = document.getElementById('output');
 const inputTanggal = document.getElementById('tanggal');
-const toggleBtn = document.getElementById('toggleAudio');
 const audio = document.getElementById('bg-audio');
 
 let lokasi = { lat: null, long: null };
 
-// Cek Ramadan
+// Cek apakah tanggal Ramadan
 function isRamadan(tanggal) {
   const tgl = new Date(tanggal);
   return tgl >= new Date("2025-03-10") && tgl <= new Date("2025-04-09");
 }
 
-// Dapatkan lokasi pengguna
+// Ambil lokasi user
 function getLokasi() {
   return new Promise((resolve, reject) => {
+    if (!navigator.geolocation) {
+      alert("Browser kamu tidak mendukung lokasi.");
+      reject("Geolocation not supported");
+      return;
+    }
+
     navigator.geolocation.getCurrentPosition(
-      pos => {
+      (pos) => {
         lokasi.lat = pos.coords.latitude;
         lokasi.long = pos.coords.longitude;
         resolve();
       },
-      err => {
-        alert("Gagal mendeteksi lokasi");
-        reject(err);
+      (err) => {
+        alert("Lokasi gagal. Menampilkan jadwal default (Jakarta).");
+        lokasi.lat = -6.2;
+        lokasi.long = 106.8;
+        resolve(); // tetap lanjut pakai default
       }
     );
   });
 }
 
-// Ambil data dari API
+// Ambil jadwal dari API
 async function getJadwal(tanggal) {
-  const dateObj = new Date(tanggal);
-  const day = dateObj.getDate();
-  const month = dateObj.getMonth() + 1;
-  const year = dateObj.getFullYear();
+  const d = new Date(tanggal);
+  const day = d.getDate();
+  const month = d.getMonth() + 1;
+  const year = d.getFullYear();
 
   const url = `https://api.aladhan.com/v1/timings/${day}-${month}-${year}?latitude=${lokasi.lat}&longitude=${lokasi.long}&method=2`;
-
   const res = await fetch(url);
   const data = await res.json();
   return data.data.timings;
 }
 
-// Tampilkan hasil ke HTML
+// Tampilkan hasil ke halaman
 function tampilkan(timings, tanggal) {
   const ramadan = isRamadan(tanggal);
   let html = `<h2>Jadwal Sholat untuk ${tanggal}</h2>`;
@@ -59,58 +65,41 @@ function tampilkan(timings, tanggal) {
   output.innerHTML = html;
 }
 
-// Tombol mute/unmute audio
-toggleBtn.addEventListener("click", () => {
-  audio.muted = !audio.muted;
-  toggleBtn.textContent = audio.muted ? "🔇" : "🔊";
-});
+// Aktifkan sistem setelah user sentuh layar
+function aktifkanSetelahInteraksi() {
+  document.removeEventListener("click", aktifkanSetelahInteraksi);
+  document.removeEventListener("touchstart", aktifkanSetelahInteraksi);
 
-// Klik tombol "Cari Jadwal"
-cariBtn.addEventListener('click', async () => {
-  const tanggal = inputTanggal.value;
-  if (!tanggal) {
-    alert('Silakan pilih tanggal terlebih dahulu!');
-    return;
-  }
+  // Mainkan audio
+  audio.muted = false;
+  audio.play().catch(() => {
+    console.log("Autoplay audio tetap diblokir.");
+  });
 
-  try {
-    // Mulai audio saat user klik tombol (interaksi user)
-    audio.muted = false;
-    await audio.play();
+  // Aktifkan tombol
+  cariBtn.disabled = false;
 
-    await getLokasi();
-    const jadwal = await getJadwal(tanggal);
-    tampilkan(jadwal, tanggal);
-  } catch (err) {
-    console.error(err);
-  }
-});
+  // Saat tombol diklik
+  cariBtn.addEventListener('click', async () => {
+    const tanggal = inputTanggal.value;
+    if (!tanggal) {
+      alert("Silakan pilih tanggal terlebih dahulu.");
+      return;
+    }
 
-
-// Autoplay audio fix fix capek mlas
-window.addEventListener("load", () => {
-  audio.muted = true;
-  setTimeout(() => {
-    audio.muted = false;
-  }, 1000);
-});,
-
-// Play musik saat user pertama kali sentuh / klik halaman
-function aktifkanMusikSetelahInteraksi() {
-  const playMusik = () => {
-    audio.muted = false;
-    audio.play().then(() => {
-      console.log("Musik dimulai setelah interaksi.");
-      document.removeEventListener("click", playMusik);
-      document.removeEventListener("touchstart", playMusik);
-    }).catch((err) => {
-      console.log("Gagal autoplay musik:", err);
-    });
-  };
-
-  document.addEventListener("click", playMusik);
-  document.addEventListener("touchstart", playMusik);
+    try {
+      await getLokasi();
+      const jadwal = await getJadwal(tanggal);
+      tampilkan(jadwal, tanggal);
+    } catch (err) {
+      console.error(err);
+    }
+  });
 }
 
-// Aktifkan fungsi itu saat halaman load
-window.addEventListener("load", aktifkanMusikSetelahInteraksi);
+// Jalankan saat halaman load
+window.addEventListener("load", () => {
+  cariBtn.disabled = true; // disable dulu
+  document.addEventListener("click", aktifkanSetelahInteraksi);
+  document.addEventListener("touchstart", aktifkanSetelahInteraksi);
+});
