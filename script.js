@@ -1,4 +1,5 @@
 const cariBtn = document.getElementById('cariBtn');
+const toggleBtn = document.getElementById('toggleAudio');
 const output = document.getElementById('output');
 const inputTanggal = document.getElementById('tanggal');
 const audio = document.getElementById('bg-audio');
@@ -12,12 +13,12 @@ function isRamadan(tanggal) {
   return tgl >= new Date("2025-03-10") && tgl <= new Date("2025-04-09");
 }
 
-// Ambil lokasi pengguna
+// Lokasi user
 function getLokasi() {
   return new Promise((resolve, reject) => {
     if (!navigator.geolocation) {
-      alert("Browser kamu tidak mendukung lokasi.");
-      reject("Geolocation not supported");
+      alert("Geolocation tidak didukung browser.");
+      reject();
       return;
     }
 
@@ -27,7 +28,7 @@ function getLokasi() {
         lokasi.long = pos.coords.longitude;
         resolve();
       },
-      (err) => {
+      () => {
         alert("Lokasi gagal. Menampilkan jadwal default (Jakarta).");
         lokasi.lat = -6.2;
         lokasi.long = 106.8;
@@ -37,7 +38,7 @@ function getLokasi() {
   });
 }
 
-// Ambil data dari API
+// Ambil dari API
 async function getJadwal(tanggal) {
   const d = new Date(tanggal);
   const day = d.getDate();
@@ -50,7 +51,7 @@ async function getJadwal(tanggal) {
   return data.data.timings;
 }
 
-// Tampilkan jadwal ke halaman
+// Tampilkan
 function tampilkan(timings, tanggal) {
   const ramadan = isRamadan(tanggal);
   let html = `<h2>Jadwal Sholat untuk ${tanggal}</h2>`;
@@ -66,47 +67,46 @@ function tampilkan(timings, tanggal) {
   output.innerHTML = html;
 }
 
-// Jalankan semua setelah user interaksi pertama
-function aktifkanSetelahInteraksi() {
-  document.removeEventListener("click", aktifkanSetelahInteraksi);
-  document.removeEventListener("touchstart", aktifkanSetelahInteraksi);
+// Interaksi pertama
+function aktifkanSemua() {
+  document.removeEventListener("click", aktifkanSemua);
+  document.removeEventListener("touchstart", aktifkanSemua);
 
-  // Play audio
   audio.muted = false;
   audio.play().catch(() => {
-    console.log("Autoplay diblokir");
+    console.log("Autoplay audio tetap ditolak.");
   });
 
-  // Aktifkan tombol dan event klik
   cariBtn.disabled = false;
-
-  cariBtn.addEventListener('click', async () => {
-    const tanggal = inputTanggal.value;
-    if (!tanggal) {
-      alert("Silakan pilih tanggal terlebih dahulu!");
-      return;
-    }
-
-    try {
-      await getLokasi();
-      const jadwal = await getJadwal(tanggal);
-      tampilkan(jadwal, tanggal);
-    } catch (err) {
-      console.error(err);
-    }
-  });
 }
 
-// Deteksi jika pakai HP → ganti video 360p
-window.addEventListener("load", () => {
-  const isMobile = window.innerWidth <= 768;
-  if (isMobile) {
-    videoSource.src = "video/background-mobile.mp4";
-    document.getElementById("bg-video").load();
+// Tombol mute/unmute
+toggleBtn.addEventListener("click", () => {
+  audio.muted = !audio.muted;
+  toggleBtn.textContent = audio.muted ? "🔇" : "🔊";
+});
+
+// Klik cari jadwal
+cariBtn.addEventListener("click", async () => {
+  const tanggal = inputTanggal.value;
+  if (!tanggal) {
+    alert("Silakan pilih tanggal.");
+    return;
   }
 
-  // Tunda aktivasi sistem sampai user klik
+  try {
+    await getLokasi();
+    const jadwal = await getJadwal(tanggal);
+    tampilkan(jadwal, tanggal);
+  } catch (err) {
+    console.error(err);
+  }
+});
+
+// Saat halaman dibuka
+window.addEventListener("load", () => {
   cariBtn.disabled = true;
-  document.addEventListener("click", aktifkanSetelahInteraksi);
-  document.addEventListener("touchstart", aktifkanSetelahInteraksi);
+  toggleBtn.textContent = "🔊";
+  document.addEventListener("click", aktifkanSemua);
+  document.addEventListener("touchstart", aktifkanSemua);
 });
