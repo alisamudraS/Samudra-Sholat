@@ -114,3 +114,22 @@ function aktifkanMusikSetelahInteraksi() {
 
 // Aktifkan fungsi itu saat halaman load
 window.addEventListener("load", aktifkanMusikSetelahInteraksi);
+
+function aktifkanSetelahInteraksi() {
+  document.removeEventListener("click", aktifkanSetelahInteraksi);
+  document.removeEventListener("touchstart", aktifkanSetelahInteraksi);
+
+  audio.muted = false;
+  audio.play().catch((e) => {
+    console.log("Autoplay tetap ditolak:", e);
+  });
+
+  // Reaktifkan tombol "Cari Jadwal" setelah interaksi
+  cariBtn.disabled = false;
+}
+
+window.addEventListener("load", () => {
+  cariBtn.disabled = true; // Disable dulu sebelum interaksi
+  document.addEventListener("click", aktifkanSetelahInteraksi);
+  document.addEventListener("touchstart", aktifkanSetelahInteraksi);
+});
