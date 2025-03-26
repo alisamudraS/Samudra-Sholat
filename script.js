@@ -2,16 +2,17 @@ const cariBtn = document.getElementById('cariBtn');
 const output = document.getElementById('output');
 const inputTanggal = document.getElementById('tanggal');
 const audio = document.getElementById('bg-audio');
+const videoSource = document.getElementById("video-source");
 
 let lokasi = { lat: null, long: null };
 
-// Cek apakah tanggal Ramadan
+// Cek Ramadan
 function isRamadan(tanggal) {
   const tgl = new Date(tanggal);
   return tgl >= new Date("2025-03-10") && tgl <= new Date("2025-04-09");
 }
 
-// Ambil lokasi user
+// Ambil lokasi pengguna
 function getLokasi() {
   return new Promise((resolve, reject) => {
     if (!navigator.geolocation) {
@@ -30,13 +31,13 @@ function getLokasi() {
         alert("Lokasi gagal. Menampilkan jadwal default (Jakarta).");
         lokasi.lat = -6.2;
         lokasi.long = 106.8;
-        resolve(); // tetap lanjut pakai default
+        resolve();
       }
     );
   });
 }
 
-// Ambil jadwal dari API
+// Ambil data dari API
 async function getJadwal(tanggal) {
   const d = new Date(tanggal);
   const day = d.getDate();
@@ -49,7 +50,7 @@ async function getJadwal(tanggal) {
   return data.data.timings;
 }
 
-// Tampilkan hasil ke halaman
+// Tampilkan jadwal ke halaman
 function tampilkan(timings, tanggal) {
   const ramadan = isRamadan(tanggal);
   let html = `<h2>Jadwal Sholat untuk ${tanggal}</h2>`;
@@ -65,25 +66,24 @@ function tampilkan(timings, tanggal) {
   output.innerHTML = html;
 }
 
-// Aktifkan sistem setelah user sentuh layar
+// Jalankan semua setelah user interaksi pertama
 function aktifkanSetelahInteraksi() {
   document.removeEventListener("click", aktifkanSetelahInteraksi);
   document.removeEventListener("touchstart", aktifkanSetelahInteraksi);
 
-  // Mainkan audio
+  // Play audio
   audio.muted = false;
   audio.play().catch(() => {
-    console.log("Autoplay audio tetap diblokir.");
+    console.log("Autoplay diblokir");
   });
 
-  // Aktifkan tombol
+  // Aktifkan tombol dan event klik
   cariBtn.disabled = false;
 
-  // Saat tombol diklik
   cariBtn.addEventListener('click', async () => {
     const tanggal = inputTanggal.value;
     if (!tanggal) {
-      alert("Silakan pilih tanggal terlebih dahulu.");
+      alert("Silakan pilih tanggal terlebih dahulu!");
       return;
     }
 
@@ -97,9 +97,16 @@ function aktifkanSetelahInteraksi() {
   });
 }
 
-// Jalankan saat halaman load
+// Deteksi jika pakai HP → ganti video 360p
 window.addEventListener("load", () => {
-  cariBtn.disabled = true; // disable dulu
+  const isMobile = window.innerWidth <= 768;
+  if (isMobile) {
+    videoSource.src = "video/background-mobile.mp4";
+    document.getElementById("bg-video").load();
+  }
+
+  // Tunda aktivasi sistem sampai user klik
+  cariBtn.disabled = true;
   document.addEventListener("click", aktifkanSetelahInteraksi);
   document.addEventListener("touchstart", aktifkanSetelahInteraksi);
 });
