@@ -98,3 +98,9 @@
     to { opacity: 1; transform: translateY(0); }
   }
   
+/* Sembunyikan video di HP */
+@media screen and (max-width: 768px) {
+  #bg-video {
+    display: none;
+  }
+}
